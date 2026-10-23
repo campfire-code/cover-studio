@@ -1,0 +1,29 @@
+/* 封面工坊：只用 kit.css 的变量，类名以 cs- 开头 */
+.cs { flex: 1; display: grid; grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 14px; align-items: start; min-height: 0; }
+.cs-hover .cs-view { outline: 2px dashed var(--primary); outline-offset: 4px; border-radius: var(--radius); }
+.cs-edit { position: sticky; top: 0; display: flex; flex-direction: column; gap: 14px; padding: 14px; }
+.cs-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.cs-text { min-height: 150px; height: 22vh; resize: vertical; font-size: .95em; line-height: 1.6; }
+.cs-warn { color: var(--err); }
+.cs-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.cs-chips .k-chip { padding: 4px 10px 4px 7px; }
+.cs-ratio { height: 13px; max-width: 30px; border: 1.5px solid currentColor; border-radius: 2px; flex: none; opacity: .7; }
+.cs-sw { width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--line-strong); flex: none; }
+.cs-two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cs-view { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.cs-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.cs-dir { max-width: min(300px, 100%); }
+.cs-empty { padding: 48px 20px; text-align: center; }
+.cs-group { display: grid; gap: 8px; min-width: 0; }
+.cs-gname { display: flex; gap: 8px; align-items: baseline; font-weight: 600; min-width: 0; }
+.cs-gname .k-num { color: var(--primary); }
+.cs-thumbs { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+.cs-thumb { display: grid; gap: 4px; justify-items: center; padding: 0; border: 0; background: none; cursor: zoom-in; font-size: .82em; }
+.cs-thumb canvas { display: block; width: auto; border-radius: 6px; border: 1px solid var(--line); background: var(--chip); transition: border-color .15s var(--ease), transform .15s var(--ease); }
+.cs-thumb:hover canvas { border-color: var(--primary); transform: translateY(-2px); }
+.cs-zoom { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 20px; background: color-mix(in srgb, var(--ink) 45%, transparent); }
+.cs-zoom-box { display: grid; gap: 12px; padding: 14px; max-width: 100%; max-height: 100%; }
+.cs-zoom-img { display: grid; place-items: center; }
+.cs-zoom-img canvas { width: auto; max-width: 100%; border-radius: var(--radius); border: 1px solid var(--line); }
+.cs-zoom-bar { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+@media (max-width: 760px) { .cs { grid-template-columns: 1fr; } .cs-edit { position: static; } }

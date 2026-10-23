@@ -1,0 +1,16 @@
+{
+  "id": "c18",
+  "slug": "cover-studio",
+  "name": "封面工坊",
+  "version": "0.1.0",
+  "repo": "campfire-code/cover-studio",
+  "license": "MIT",
+  "ui": {
+    "layout": "c",
+    "palette": "rose"
+  },
+  "upstream": {
+    "repo": "weizwz/cover",
+    "license": "MIT"
+  }
+}
