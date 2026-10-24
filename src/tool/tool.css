@@ -1,9 +1,26 @@
 /* 封面工坊：只用 kit.css 的变量，类名以 cs- 开头 */
-.cs { flex: 1; display: grid; grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 14px; align-items: start; min-height: 0; }
+.cs { flex: 1; display: flex; flex-direction: column; gap: 14px; min-height: 0; font-size: 1.02em; }
 .cs-hover .cs-view { outline: 2px dashed var(--primary); outline-offset: 4px; border-radius: var(--radius); }
-.cs-edit { position: sticky; top: 0; display: flex; flex-direction: column; gap: 14px; padding: 14px; }
+.cs-top { display: grid; grid-template-columns: minmax(240px, 300px) minmax(0, 1fr); gap: 20px; padding: 14px 18px; }
+.cs-titles { align-content: start; }
+.cs-ctrl { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.cs-three { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 10px; }
+.cs-tpls { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 6px; }
+.cs-tpl { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 54px; padding: 6px 4px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); cursor: pointer; font-size: .9em; text-align: center; white-space: nowrap; transition: border-color .15s var(--ease), background .15s var(--ease); }
+.cs-tpl:hover { border-color: var(--line-strong); }
+.cs-tpl.on { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); font-weight: 600; }
+.cs-tpl .cs-sw { width: 24px; height: 24px; }
+.cs-scroll { overflow-x: auto; padding: 14px 16px 16px; }
+.cs-matrix { display: grid; gap: 12px 14px; align-items: center; width: max-content; min-width: 100%; }
+.cs-rowwrap { display: contents; }
+.cs-colh { display: flex; flex-direction: column; font-size: .88em; line-height: 1.35; padding-bottom: 2px; border-bottom: 2px solid var(--primary-soft); }
+.cs-rowh { display: flex; align-items: flex-start; gap: 10px; min-width: 0; padding-right: 6px; }
+.cs-no { font-size: 1.5em; font-weight: 800; color: var(--primary); line-height: 1.1; }
+.cs-rt { display: grid; min-width: 0; gap: 2px; }
+.cs-rt b { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.cs-rt small { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-size: .88em; }
 .cs-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
-.cs-text { min-height: 150px; height: 22vh; resize: vertical; font-size: .95em; line-height: 1.6; }
+.cs-text { min-height: 132px; height: 20vh; resize: vertical; font-size: .95em; line-height: 1.6; }
 .cs-warn { color: var(--err); }
 .cs-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .cs-chips .k-chip { padding: 4px 10px 4px 7px; }
@@ -18,7 +35,7 @@
 .cs-gname { display: flex; gap: 8px; align-items: baseline; font-weight: 600; min-width: 0; }
 .cs-gname .k-num { color: var(--primary); }
 .cs-thumbs { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
-.cs-thumb { display: grid; gap: 4px; justify-items: center; padding: 0; border: 0; background: none; cursor: zoom-in; font-size: .82em; }
+.cs-thumb { display: block; padding: 0; border: 0; background: none; cursor: zoom-in; }
 .cs-thumb canvas { display: block; width: auto; border-radius: 6px; border: 1px solid var(--line); background: var(--chip); transition: border-color .15s var(--ease), transform .15s var(--ease); }
 .cs-thumb:hover canvas { border-color: var(--primary); transform: translateY(-2px); }
 .cs-zoom { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 20px; background: color-mix(in srgb, var(--ink) 45%, transparent); }
@@ -26,4 +43,5 @@
 .cs-zoom-img { display: grid; place-items: center; }
 .cs-zoom-img canvas { width: auto; max-width: 100%; border-radius: var(--radius); border: 1px solid var(--line); }
 .cs-zoom-bar { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
-@media (max-width: 760px) { .cs { grid-template-columns: 1fr; } .cs-edit { position: static; } }
+@media (max-width: 760px) { .cs-top, .cs-three { grid-template-columns: 1fr; } }
+.cs > * { flex-shrink: 0; }

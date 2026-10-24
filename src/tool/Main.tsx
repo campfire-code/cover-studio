@@ -14,7 +14,7 @@ type Ctx = Parameters<CustomTool['Main']>[0]['ctx'];
 const TOOL_NAME = '封面工坊';
 const DEFAULTS: Prefs = { titles: SAMPLE, sizes: SIZES.map((s) => s.id).join(','), template: TEMPLATES[0].id, tag: SAMPLE_TAG, signature: '@你的账号名', bgPath: '', outDir: '' };
 /** 预览缩略图的高度（像素） */
-const THUMB_H = 128;
+const THUMB_H = 88;
 const fileName = (p: string) => p.split(/[\\/]/).pop() ?? p;
 
 interface CoverProps { text: CoverText; size: SizeSpec; t: Template; tag: string; signature: string; img: Img | null; height: number }
@@ -143,8 +143,8 @@ export function Main({ ctx }: { ctx?: Ctx }) {
   const cur = zoom != null ? flat[zoom] : null;
   return (
     <div className={`cs${hover ? ' cs-hover' : ''}`}>
-      <section className="cs-edit k-panel">
-        <div className="k-field">
+      <section className="cs-top k-panel">
+        <div className="k-field cs-titles">
           <div className="cs-row">
             <label className="k-label" htmlFor="cs-titles">标题列表（每行一个）</label>
             <span className="b-sp" />
@@ -154,53 +154,55 @@ export function Main({ ctx }: { ctx?: Ctx }) {
           <span className="k-help">每行生成一组封面；「|」后面是副标题。一次最多 {MAX_TITLES} 个标题，字多会自动缩小、换行。</span>
           {allTexts.length > MAX_TITLES && <span className="k-help cs-warn">共 {allTexts.length} 行，只处理前 {MAX_TITLES} 个</span>}
         </div>
-        <div className="k-field">
-          <span className="k-label">尺寸（可多选）</span>
-          <div className="cs-chips" role="group" aria-label="尺寸">
-            {SIZES.map((s) => {
-              const on = sizes.some((x) => x.id === s.id);
-              return (
-                <button key={s.id} role="checkbox" aria-checked={on} className={`k-chip${on ? ' on' : ''}`} onClick={() => toggleSize(s.id)}>
-                  <i className="cs-ratio" style={{ aspectRatio: `${s.w} / ${s.h}` }} />{s.name}<span className="k-muted k-num">{s.ratio}</span>
+        <div className="cs-ctrl">
+          <div className="k-field">
+            <span className="k-label">模板</span>
+            <div className="cs-tpls" role="radiogroup" aria-label="模板">
+              {TEMPLATES.map((x) => (
+                <button key={x.id} role="radio" aria-checked={x.id === t.id} className={`cs-tpl${x.id === t.id ? ' on' : ''}`} onClick={() => set({ template: x.id })}>
+                  <i className="cs-sw" style={{ background: `linear-gradient(135deg, ${x.swatch[0]} 50%, ${x.swatch[1]} 50%)` }} />
+                  <span>{x.name}</span>
                 </button>
-              );
-            })}
-          </div>
-        </div>
-        <div className="k-field">
-          <span className="k-label">模板</span>
-          <div className="cs-chips" role="radiogroup" aria-label="模板">
-            {TEMPLATES.map((x) => (
-              <button key={x.id} role="radio" aria-checked={x.id === t.id} className={`k-chip${x.id === t.id ? ' on' : ''}`} onClick={() => set({ template: x.id })}>
-                <i className="cs-sw" style={{ background: `linear-gradient(135deg, ${x.swatch[0]} 50%, ${x.swatch[1]} 50%)` }} />{x.name}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="k-field">
-          <span className="k-label">背景图（可选）</span>
-          <div className="cs-row">
-            <button className="k-btn" disabled={!ctx} onClick={async () => { const [p] = await pickFiles(IMAGE_EXTS, '图片').catch(() => []); if (p) set({ bgPath: p }); }}><ImagePlus size={15} />{prefs.bgPath ? '换一张' : '选择图片'}</button>
-            {prefs.bgPath && <span className="k-ellipsis k-muted" title={prefs.bgPath}>{fileName(prefs.bgPath)}</span>}
-            {prefs.bgPath && <button className="k-icon-btn" aria-label="去掉背景图" title="去掉背景图" onClick={() => set({ bgPath: '' })}><Trash2 size={14} /></button>}
-          </div>
-          <span className="k-help">铺满并居中裁剪，模板会自动加色块或蒙层保证文字看得清。也可以直接把图片拖进窗口。</span>
-        </div>
-        <div className="cs-two">
-          <div className="k-field">
-            <label className="k-label" htmlFor="cs-tag">角标（可留空）</label>
-            <input id="cs-tag" className="k-input" value={prefs.tag} maxLength={16} placeholder="例如：第 12 期" onChange={(e) => set({ tag: e.target.value })} />
+              ))}
+            </div>
           </div>
           <div className="k-field">
-            <label className="k-label" htmlFor="cs-sig">署名（可留空）</label>
-            <input id="cs-sig" className="k-input" value={prefs.signature} maxLength={30} onChange={(e) => set({ signature: e.target.value })} />
+            <span className="k-label">尺寸（可多选）</span>
+            <div className="cs-chips" role="group" aria-label="尺寸">
+              {SIZES.map((s) => {
+                const on = sizes.some((x) => x.id === s.id);
+                return (
+                  <button key={s.id} role="checkbox" aria-checked={on} className={`k-chip${on ? ' on' : ''}`} onClick={() => toggleSize(s.id)}>
+                    <i className="cs-ratio" style={{ aspectRatio: `${s.w} / ${s.h}` }} />{s.name}<span className="k-muted k-num">{s.ratio}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div className="cs-three">
+            <div className="k-field">
+              <span className="k-label">背景图（可选）</span>
+              <div className="cs-row">
+                <button className="k-btn" title="铺满并居中裁剪，模板会自动加色块或蒙层保证文字看得清；也可以直接把图片拖进窗口" disabled={!ctx} onClick={async () => { const [p] = await pickFiles(IMAGE_EXTS, '图片').catch(() => []); if (p) set({ bgPath: p }); }}><ImagePlus size={15} />{prefs.bgPath ? '换一张' : '选择图片'}</button>
+                {prefs.bgPath && <span className="k-ellipsis k-muted" title={prefs.bgPath}>{fileName(prefs.bgPath)}</span>}
+                {prefs.bgPath && <button className="k-icon-btn" aria-label="去掉背景图" title="去掉背景图" onClick={() => set({ bgPath: '' })}><Trash2 size={14} /></button>}
+              </div>
+            </div>
+            <div className="k-field">
+              <label className="k-label" htmlFor="cs-tag">角标（可留空）</label>
+              <input id="cs-tag" className="k-input" value={prefs.tag} maxLength={16} placeholder="例如：第 12 期" onChange={(e) => set({ tag: e.target.value })} />
+            </div>
+            <div className="k-field">
+              <label className="k-label" htmlFor="cs-sig">署名（可留空）</label>
+              <input id="cs-sig" className="k-input" value={prefs.signature} maxLength={30} onChange={(e) => set({ signature: e.target.value })} />
+            </div>
           </div>
         </div>
       </section>
 
       <section className="cs-view">
         <div className="cs-bar">
-          <b>预览</b>
+          <b>封面矩阵</b>
           <span className="k-muted k-num">{texts.length} 个标题 × {sizes.length} 个尺寸 = {total} 张</span>
           <span className="b-sp" />
           <button className="k-btn cs-dir" title={outDir || '选择保存位置'} onClick={async () => { const p = await pickFolder().catch(() => null); if (p) set({ outDir: p }); }}>
@@ -215,20 +217,25 @@ export function Main({ ctx }: { ctx?: Ctx }) {
             <button className="k-icon-btn" aria-label="关闭提示" onClick={() => setMsg(null)}><X size={14} /></button>
           </div>
         )}
-        {!total && <div className="cs-empty k-panel k-muted">{texts.length ? '至少选一个尺寸' : '在左边填上标题，这里会实时出封面'}</div>}
-        {texts.map((text, ti) => (
-          <div key={ti} className="cs-group">
-            <div className="cs-gname"><span className="k-num">{String(ti + 1).padStart(2, '0')}</span><span className="k-ellipsis">{text.title.replace(/\n/g, ' ')}</span></div>
-            <div className="cs-thumbs">
-              {sizes.map((size) => (
-                <button key={size.id} className="cs-thumb" title={`${size.name} ${size.ratio} · ${size.w}×${size.h}，点击放大`} onClick={() => setZoom(flat.findIndex((f) => f.ti === ti && f.size.id === size.id))}>
-                  <CoverCanvas text={text} size={size} t={t} tag={prefs.tag} signature={prefs.signature} img={img} height={THUMB_H} />
-                  <span className="k-muted">{size.name}</span>
-                </button>
+        {!total && <div className="cs-empty k-panel k-muted">{texts.length ? '至少选一个尺寸' : '在上面填上标题，这里会实时出封面'}</div>}
+        {total > 0 && (
+          <div className="cs-scroll k-panel">
+            <div className="cs-matrix" style={{ gridTemplateColumns: `minmax(120px, 190px) repeat(${sizes.length}, max-content)` }}>
+              <span />
+              {sizes.map((size) => <span key={size.id} className="cs-colh"><b>{size.name}</b><span className="k-muted k-num">{size.ratio}</span></span>)}
+              {texts.map((text, ti) => (
+                <div key={ti} className="cs-rowwrap">
+                  <div className="cs-rowh"><span className="cs-no k-num">{String(ti + 1).padStart(2, '0')}</span><span className="cs-rt"><b>{text.title.replace(/\n/g, ' ')}</b>{text.sub && <small className="k-muted">{text.sub}</small>}</span></div>
+                  {sizes.map((size) => (
+                    <button key={size.id} className="cs-thumb" title={`${size.name} ${size.ratio} · ${size.w}×${size.h}，点击放大`} onClick={() => setZoom(flat.findIndex((f) => f.ti === ti && f.size.id === size.id))}>
+                      <CoverCanvas text={text} size={size} t={t} tag={prefs.tag} signature={prefs.signature} img={img} height={THUMB_H} />
+                    </button>
+                  ))}
+                </div>
               ))}
             </div>
           </div>
-        ))}
+        )}
       </section>
 
       {cur && zoom != null && (
